@@ -71,11 +71,10 @@ self.addEventListener("fetch", function (evt) {
     return;
   }
 
+  // Reference https://developer.mozilla.org/en-US/docs/Web/API/FetchEvent/respondWith to fix offline error
   evt.respondWith(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.match(evt.request).then(response => {
-        return response || fetch(evt.request);
-      });
+    fetch(evt.request).catch(function() {
+      return caches.match(evt.request);
     })
   );
 });
